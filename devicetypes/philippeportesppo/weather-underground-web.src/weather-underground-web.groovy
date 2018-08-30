@@ -136,6 +136,9 @@ metadata {
 	main("wu_main")
 	details(["UGW_web","temperature","humidity","UGWFeelsLikelevel","UGWdewpointlevel","UGW_Icon_UrlIcon","weather","refresh" ])
  	}
+    preferences {
+        input name: "pws", type: "text", title: "personal weather station id", description: "should be formatted pws:xxx", required: false
+	}
 }
 
 def installed() {
@@ -191,8 +194,9 @@ def forcepoll()
 def refresh() {
 	log.debug "Executing 'refresh'"
     
-    def mymap = getWeatherFeature("conditions")
-        
+    def mymap = getWeatherFeature("conditions", settings.pws)
+//log.debug "${mymap}"
+	log.debug "location : ${mymap['current_observation']['station_id']}"
     log.debug "response feelslike_c: ${mymap['current_observation']['feelslike_c']}"
     log.debug "response dewpoint_c: ${mymap['current_observation']['dewpoint_c']}"
     log.debug "response relative_humidity: ${mymap['current_observation']['relative_humidity']}"
@@ -291,4 +295,4 @@ def refresh() {
             state.highhumidityalert=false
     }
 
-}    
+}
